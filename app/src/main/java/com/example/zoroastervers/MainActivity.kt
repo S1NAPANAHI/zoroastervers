@@ -59,17 +59,8 @@ fun ModernEbookReaderApp() {
         }
         "library" -> {
             ModernLibraryScreen(
-                onChapterClick = { chapterId ->
-                    selectedChapter = chapterId
+                onNavigateToReader = {
                     currentScreen = "reader"
-                },
-                onCharacterClick = { characterSlug ->
-                    // Handle character click - could navigate to character details
-                    Log.d("Navigation", "Character clicked: $characterSlug")
-                },
-                onSettingsClick = {
-                    // Handle settings click - could open settings screen
-                    Log.d("Navigation", "Settings clicked")
                 }
             )
         }
