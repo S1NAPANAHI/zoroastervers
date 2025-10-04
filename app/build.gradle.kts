@@ -2,9 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt.android)
-
-
-
     alias(libs.plugins.ksp)
 }
 
@@ -45,10 +42,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors-backend.vercel.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors.onrender.com/api/\"")
         }
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors-backend.vercel.app/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors.onrender.com/api/\"")
         }
     }
 
@@ -58,8 +55,6 @@ android {
         arg("room.log.level", "DEBUG")
     }
 }
-
-
 
 dependencies {
     // Core Android
@@ -98,8 +93,6 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.android.compiler)
-
-
     
     // Work Manager
     implementation(libs.androidx.work.runtime.ktx)
