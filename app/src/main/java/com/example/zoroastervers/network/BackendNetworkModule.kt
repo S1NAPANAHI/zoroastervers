@@ -23,8 +23,8 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object BackendNetworkModule {
     
-    // Base URL for your backend - update this with your actual backend URL
-    private const val BACKEND_BASE_URL = "https://webcite-for-new-authors-backend.vercel.app/api/"
+    // Base URL for your backend deployed on Render
+    private const val BACKEND_BASE_URL = "https://webcite-for-new-authors.onrender.com/api/"
     
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
