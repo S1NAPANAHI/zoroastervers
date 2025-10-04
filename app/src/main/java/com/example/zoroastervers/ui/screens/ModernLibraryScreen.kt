@@ -176,15 +176,15 @@ fun LibraryContent(onNavigateToReader: () -> Unit) {
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
         item {
-            SectionTitle("Continue Reading")
+            LibrarySectionTitle("Continue Reading")
             ContinueReadingSection(onNavigateToReader)
         }
         item {
-            SectionTitle("Recently Added")
+            LibrarySectionTitle("Recently Added")
             RecentlyAddedSection()
         }
         item {
-            SectionTitle("Your Library")
+            LibrarySectionTitle("Your Library")
         }
         items(sampleBooks) { book ->
             BookListItem(book = book, onClick = onNavigateToReader)
@@ -193,7 +193,7 @@ fun LibraryContent(onNavigateToReader: () -> Unit) {
 }
 
 @Composable
-fun SectionTitle(title: String) {
+fun LibrarySectionTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.titleLarge,
@@ -259,7 +259,7 @@ fun ContinueReadingCard(book: Book, progress: Float, onClick: () -> Unit) {
                 }
                 Column {
                     LinearProgressIndicator(
-                        progress = { progress },
+                        progress = progress,
                         modifier = Modifier.fillMaxWidth(),
                         strokeCap = StrokeCap.Round
                     )
