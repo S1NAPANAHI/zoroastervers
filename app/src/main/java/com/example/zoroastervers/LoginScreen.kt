@@ -144,7 +144,7 @@ fun LoginScreen(
                 )
             ) {
                 Text(
-                    text = uiState.message,
+                    text = currentUiState.message,
                     modifier = Modifier.padding(16.dp),
                     color = MaterialTheme.colorScheme.onErrorContainer
                 )
