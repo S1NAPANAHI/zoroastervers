@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.zoroastervers.data.ZoroasterversDatabase
 import com.example.zoroastervers.data.UserDao
+import com.example.zoroastervers.data.ReadingProgressDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,14 +35,14 @@ object DatabaseModule {
         return database.userDao()
     }
 
+    @Provides
+    fun provideReadingProgressDao(database: ZoroasterversDatabase): ReadingProgressDao {
+        return database.readingProgressDao()
+    }
+
     // Add other DAO providers as entities are uncommented in the database
     // @Provides
     // fun provideChapterDao(database: ZoroasterversDatabase): ChapterDao {
     //     return database.chapterDao()
-    // }
-    
-    // @Provides
-    // fun provideReadingProgressDao(database: ZoroasterversDatabase): ReadingProgressDao {
-    //     return database.readingProgressDao()
     // }
 }
