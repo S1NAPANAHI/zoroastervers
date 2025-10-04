@@ -224,7 +224,7 @@ fun BackendLoginScreen(
                     }
                 }
                 
-                // Error message - Fix smart cast issue
+                // Error message - Fixed smart cast issue by capturing state in local variable
                 val currentUiState = uiState
                 if (currentUiState is BackendAuthUiState.Error) {
                     Card(
@@ -255,7 +255,7 @@ fun BackendLoginScreen(
                 .padding(vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
@@ -265,7 +265,7 @@ fun BackendLoginScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
@@ -336,7 +336,8 @@ fun BackendLoginScreen(
     
     // Clear error when user starts typing
     LaunchedEffect(email, password) {
-        if (uiState is BackendAuthUiState.Error) {
+        val currentState = uiState
+        if (currentState is BackendAuthUiState.Error) {
             viewModel.clearError()
         }
     }
