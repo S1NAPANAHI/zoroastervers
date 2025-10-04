@@ -255,7 +255,7 @@ fun BackendLoginScreen(
                 .padding(vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            HorizontalDivider(
+            Divider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
@@ -265,7 +265,7 @@ fun BackendLoginScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            HorizontalDivider(
+            Divider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
