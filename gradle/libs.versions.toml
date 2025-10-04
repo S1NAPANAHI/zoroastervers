@@ -25,12 +25,18 @@ androidx-test-ext-junit = "1.1.5"
 androidx-test-espresso-core = "3.5.1"
 security-crypto = "1.0.0"
 lifecycle-compose = "2.7.0"
+material = "1.12.0"
+appcompat = "1.6.1"
 
 [libraries]
 # AndroidX
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime-ktx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
+
+# Material Design
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 # Compose BOM - Updated to newer version that includes HorizontalDivider
 compose-bom = { group = "androidx.compose", name = "compose-bom", version = "2024.04.01" }
