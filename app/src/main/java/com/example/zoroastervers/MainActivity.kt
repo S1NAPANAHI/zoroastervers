@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.zoroastervers.ui.auth.BackendLoginScreen
 import com.example.zoroastervers.ui.auth.BackendSignUpScreen
 import com.example.zoroastervers.ui.components.AppSidebar
+import com.example.zoroastervers.ui.debug.ApiDebugScreen
 import com.example.zoroastervers.ui.screens.*
 import com.example.zoroastervers.ui.theme.ZoroasterVersTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -104,6 +105,11 @@ fun ModernEbookReaderApp() {
                 onNavigateBack = { currentScreen = "signin" }
             )
         }
+        "debug" -> {
+            ApiDebugScreen(
+                onNavigateBack = { currentScreen = "library" }
+            )
+        }
         else -> {
             ModalNavigationDrawer(
                 drawerState = drawerState,
@@ -140,6 +146,9 @@ fun ModernEbookReaderApp() {
                             },
                             onMenuClick = {
                                 scope.launch { drawerState.open() }
+                            },
+                            onNavigateToDebug = {
+                                currentScreen = "debug"
                             }
                         )
                     }
@@ -235,7 +244,8 @@ fun ModernEbookReaderApp() {
 @Composable
 fun ModernLibraryScreenWithSidebar(
     onNavigateToReader: () -> Unit,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    onNavigateToDebug: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
@@ -244,6 +254,14 @@ fun ModernLibraryScreenWithSidebar(
                 navigationIcon = {
                     IconButton(onClick = onMenuClick) {
                         Icon(Icons.Default.Menu, "Menu")
+                    }
+                },
+                actions = {
+                    // Debug button (only in debug builds)
+                    if (BuildConfig.DEBUG) {
+                        IconButton(onClick = onNavigateToDebug) {
+                            Icon(Icons.Default.Settings, "Debug")
+                        }
                     }
                 }
             )
