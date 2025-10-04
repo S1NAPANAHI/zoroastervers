@@ -72,7 +72,7 @@ fun UserProfileScreen(
                             onClick = onNavigateToThemeSettings
                         )
                         
-                        HorizontalDivider(
+                        Divider(
                             modifier = Modifier.padding(start = 56.dp),
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                         )
@@ -84,7 +84,7 @@ fun UserProfileScreen(
                             onClick = { /* TODO */ }
                         )
                         
-                        HorizontalDivider(
+                        Divider(
                             modifier = Modifier.padding(start = 56.dp),
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                         )
@@ -113,7 +113,7 @@ fun UserProfileScreen(
                         onClick = { /* TODO */ }
                     )
                     
-                    HorizontalDivider(
+                    Divider(
                         modifier = Modifier.padding(start = 56.dp),
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
