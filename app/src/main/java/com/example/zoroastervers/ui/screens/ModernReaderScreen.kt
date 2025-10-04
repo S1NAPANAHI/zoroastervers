@@ -128,9 +128,9 @@ fun ModernReaderScreen(
             )
         }
         
-        // Reading Progress Indicator
+        // Reading Progress Indicator - FIX: Use progress parameter directly
         LinearProgressIndicator(
-            progress = { 0.3f }, // Sample progress
+            progress = 0.3f, // Sample progress - removed lambda
             modifier = Modifier
                 .fillMaxWidth()
                 .height(2.dp)
