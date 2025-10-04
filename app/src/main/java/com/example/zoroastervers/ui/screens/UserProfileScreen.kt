@@ -1,6 +1,5 @@
 package com.example.zoroastervers.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,12 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,13 +23,11 @@ fun UserProfileScreen(
     onNavigateBack: () -> Unit,
     onNavigateToThemeSettings: () -> Unit,
     onLogout: () -> Unit,
-    isLoggedIn: Boolean = false,
-    userName: String = "Guest User",
-    userEmail: String = "guest@zoroaster.app",
-    isPremiumUser: Boolean = false
+    isLoggedIn: Boolean,
+    userName: String,
+    userEmail: String,
+    isPremiumUser: Boolean
 ) {
-    var showLogoutDialog by remember { mutableStateOf(false) }
-    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,205 +47,127 @@ fun UserProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Profile Header
+            // User Profile Header
             item {
-                ProfileHeader(
+                UserProfileHeader(
+                    isLoggedIn = isLoggedIn,
                     userName = userName,
                     userEmail = userEmail,
-                    isPremiumUser = isPremiumUser,
-                    isLoggedIn = isLoggedIn
+                    isPremiumUser = isPremiumUser
                 )
             }
             
-            // Account Section
-            item {
-                SectionTitle("Account")
-            }
-            
+            // Account Settings
             if (isLoggedIn) {
                 item {
-                    ProfileMenuItem(
-                        icon = Icons.Default.Person,
-                        title = "Edit Profile",
-                        subtitle = "Update your personal information",
-                        onClick = { /* TODO: Navigate to edit profile */ }
-                    )
+                    ProfileSectionTitle("Account")
                 }
                 
                 item {
-                    ProfileMenuItem(
-                        icon = Icons.Default.Lock,
-                        title = "Change Password",
-                        subtitle = "Update your account password",
-                        onClick = { /* TODO: Navigate to change password */ }
-                    )
-                }
-                
-                if (!isPremiumUser) {
-                    item {
-                        ProfileMenuItem(
-                            icon = Icons.Default.Star,
-                            title = "Upgrade to Premium",
-                            subtitle = "Unlock offline reading and exclusive content",
-                            onClick = { /* TODO: Navigate to premium upgrade */ },
-                            showBadge = true
+                    ProfileSettingsCard {
+                        ProfileSettingItem(
+                            title = "Theme & Appearance",
+                            subtitle = "Customize reading experience",
+                            icon = Icons.Default.Palette,
+                            onClick = onNavigateToThemeSettings
+                        )
+                        
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 56.dp),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
+                        
+                        ProfileSettingItem(
+                            title = "Reading Progress",
+                            subtitle = "View your reading statistics",
+                            icon = Icons.Default.Analytics,
+                            onClick = { /* TODO */ }
+                        )
+                        
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 56.dp),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        )
+                        
+                        ProfileSettingItem(
+                            title = "Account Settings",
+                            subtitle = "Manage your account",
+                            icon = Icons.Default.Settings,
+                            onClick = { /* TODO */ }
                         )
                     }
                 }
-            } else {
-                item {
-                    ProfileMenuItem(
-                        icon = Icons.Default.Login,
-                        title = "Sign In",
-                        subtitle = "Access your account and sync data",
-                        onClick = { /* TODO: Navigate to login */ }
+            }
+            
+            // App Settings
+            item {
+                ProfileSectionTitle("App")
+            }
+            
+            item {
+                ProfileSettingsCard {
+                    ProfileSettingItem(
+                        title = "About",
+                        subtitle = "App info and version",
+                        icon = Icons.Default.Info,
+                        onClick = { /* TODO */ }
                     )
-                }
-                
-                item {
-                    ProfileMenuItem(
-                        icon = Icons.Default.PersonAdd,
-                        title = "Create Account",
-                        subtitle = "Join to access premium features",
-                        onClick = { /* TODO: Navigate to signup */ }
+                    
+                    HorizontalDivider(
+                        modifier = Modifier.padding(start = 56.dp),
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
-                }
-            }
-            
-            // App Settings Section
-            item {
-                SectionTitle("App Settings")
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Palette,
-                    title = "Theme & Appearance",
-                    subtitle = "Customize your reading experience",
-                    onClick = onNavigateToThemeSettings
-                )
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Notifications,
-                    title = "Notifications",
-                    subtitle = "Manage app notifications",
-                    onClick = { /* TODO: Navigate to notifications settings */ }
-                )
-            }
-            
-            if (isPremiumUser) {
-                item {
-                    ProfileMenuItem(
-                        icon = Icons.Default.CloudDownload,
-                        title = "Offline Content",
-                        subtitle = "Manage downloaded verses",
-                        onClick = { /* TODO: Navigate to offline content */ }
+                    
+                    ProfileSettingItem(
+                        title = "Help & Support",
+                        subtitle = "Get help and support",
+                        icon = Icons.Default.Help,
+                        onClick = { /* TODO */ }
                     )
                 }
             }
             
-            // Support Section
-            item {
-                SectionTitle("Support")
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Info,
-                    title = "About",
-                    subtitle = "Learn about ZoroasterVers",
-                    onClick = { /* TODO: Navigate to about */ }
-                )
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Help,
-                    title = "Help & Support",
-                    subtitle = "Get help and contact us",
-                    onClick = { /* TODO: Navigate to help */ }
-                )
-            }
-            
-            item {
-                ProfileMenuItem(
-                    icon = Icons.Default.Feedback,
-                    title = "Send Feedback",
-                    subtitle = "Help us improve the app",
-                    onClick = { /* TODO: Navigate to feedback */ }
-                )
-            }
-            
-            // Logout Section
+            // Logout Button
             if (isLoggedIn) {
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 
                 item {
-                    Button(
-                        onClick = { showLogoutDialog = true },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                    OutlinedButton(
+                        onClick = onLogout,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
                     ) {
-                        Icon(Icons.Default.Logout, "Logout")
+                        Icon(
+                            Icons.Default.Logout,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text("Sign Out")
                     }
                 }
             }
-            
-            // Footer spacing
-            item {
-                Spacer(modifier = Modifier.height(32.dp))
-            }
         }
-    }
-    
-    // Logout Confirmation Dialog
-    if (showLogoutDialog) {
-        AlertDialog(
-            onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Sign Out") },
-            text = { Text("Are you sure you want to sign out? Your progress will be saved.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showLogoutDialog = false
-                        onLogout()
-                    }
-                ) {
-                    Text("Sign Out")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { showLogoutDialog = false }
-                ) {
-                    Text("Cancel")
-                }
-            }
-        )
     }
 }
 
 @Composable
-fun ProfileHeader(
+fun UserProfileHeader(
+    isLoggedIn: Boolean,
     userName: String,
     userEmail: String,
-    isPremiumUser: Boolean,
-    isLoggedIn: Boolean
+    isPremiumUser: Boolean
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
     ) {
         Column(
             modifier = Modifier
@@ -266,7 +181,7 @@ fun ProfileHeader(
                     modifier = Modifier
                         .size(80.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -289,72 +204,44 @@ fun ProfileHeader(
                         Icon(
                             Icons.Default.Star,
                             contentDescription = "Premium",
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(14.dp),
                             tint = Color.White
                         )
                     }
                 }
             }
             
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             
             // User Name
             Text(
                 text = userName,
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             
-            // Email
+            // User Email
             Text(
                 text = userEmail,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
             )
             
             // Premium Badge
             if (isPremiumUser) {
                 Spacer(modifier = Modifier.height(8.dp))
-                
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFFFD700).copy(alpha = 0.1f)
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            Icons.Default.Star,
-                            contentDescription = "Premium",
-                            modifier = Modifier.size(16.dp),
-                            tint = Color(0xFFFFD700)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Premium Member",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFFFFD700),
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                }
-            } else if (isLoggedIn) {
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                        containerColor = Color(0xFFFFD700).copy(alpha = 0.2f)
                     ),
                     shape = RoundedCornerShape(20.dp)
                 ) {
                     Text(
-                        text = "Free Member",
+                        text = "Premium Member",
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = Color(0xFFFFD700),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -364,78 +251,76 @@ fun ProfileHeader(
 }
 
 @Composable
-fun SectionTitle(title: String) {
+fun ProfileSectionTitle(title: String) {
     Text(
         text = title,
         style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(vertical = 8.dp)
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(horizontal = 4.dp)
     )
 }
 
 @Composable
-fun ProfileMenuItem(
-    icon: ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: () -> Unit,
-    showBadge: Boolean = false
+fun ProfileSettingsCard(
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.padding(4.dp)
         ) {
-            Box {
-                Icon(
-                    icon,
-                    contentDescription = title,
-                    modifier = Modifier.size(24.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                
-                if (showBadge) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.error)
-                            .align(Alignment.TopEnd)
-                    )
-                }
-            }
+            content()
+        }
+    }
+}
+
+@Composable
+fun ProfileSettingItem(
+    title: String,
+    subtitle: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            icon,
+            contentDescription = title,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.onSurface
+        )
+        
+        Spacer(modifier = Modifier.width(16.dp))
+        
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
             
-            Spacer(modifier = Modifier.width(16.dp))
-            
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
-            }
-            
-            Icon(
-                Icons.Default.ChevronRight,
-                contentDescription = "Navigate",
-                modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
         }
+        
+        Icon(
+            Icons.Default.ChevronRight,
+            contentDescription = "Navigate",
+            modifier = Modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        )
     }
 }
