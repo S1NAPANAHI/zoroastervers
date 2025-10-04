@@ -45,10 +45,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://backend-url/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors-backend.vercel.app/api/\"")
         }
         debug {
-            buildConfigField("String", "API_BASE_URL", "\"https://backend-url/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://webcite-for-new-authors-backend.vercel.app/api/\"")
         }
     }
 
@@ -79,6 +79,7 @@ dependencies {
     
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     
     // Room Database
     implementation(libs.androidx.room.runtime)
@@ -89,6 +90,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
+    
+    // Security
+    implementation(libs.androidx.security.crypto)
     
     // Dependency Injection
     implementation(libs.hilt.android)

@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.zoroastervers.BackendAuthViewModel
 import com.example.zoroastervers.BackendAuthUiState
 import com.example.zoroastervers.R
-import com.example.zoroastervers.ui.theme.ZoroasterversTheme
 
 /**
  * Sign-up screen with backend authentication
@@ -426,16 +425,5 @@ fun BackendSignUpScreen(
         if (uiState is BackendAuthUiState.Error) {
             viewModel.clearError()
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BackendSignUpScreenPreview() {
-    ZoroasterversTheme {
-        BackendSignUpScreen(
-            onSignUpSuccess = {},
-            onNavigateBack = {}
-        )
     }
 }

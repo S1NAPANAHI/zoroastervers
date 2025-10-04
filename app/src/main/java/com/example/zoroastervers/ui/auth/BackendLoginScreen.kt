@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.zoroastervers.BackendAuthViewModel
 import com.example.zoroastervers.BackendAuthUiState
 import com.example.zoroastervers.R
-import com.example.zoroastervers.ui.theme.ZoroasterversTheme
 
 /**
  * Modern login screen with backend authentication
@@ -255,7 +254,7 @@ fun BackendLoginScreen(
                 .padding(vertical = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            HorizontalDivider(
+            Divider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
@@ -265,7 +264,7 @@ fun BackendLoginScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
-            HorizontalDivider(
+            Divider(
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             )
@@ -339,16 +338,5 @@ fun BackendLoginScreen(
         if (uiState is BackendAuthUiState.Error) {
             viewModel.clearError()
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BackendLoginScreenPreview() {
-    ZoroasterversTheme {
-        BackendLoginScreen(
-            onLoginSuccess = {},
-            onNavigateToSignUp = {}
-        )
     }
 }
