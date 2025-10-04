@@ -6,15 +6,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.zoroastervers.ui.screens.AnimatedSplashScreen
-import com.example.zoroastervers.ui.screens.ModernLibraryScreen
-import com.example.zoroastervers.ui.screens.ModernReaderScreen
+import com.example.zoroastervers.ui.components.AppSidebar
+import com.example.zoroastervers.ui.screens.*
 import com.example.zoroastervers.ui.theme.ZoroasterVersTheme
+import kotlinx.coroutines.launch
 
 // Remove @AndroidEntryPoint temporarily to avoid Hilt crashes
 //@AndroidEntryPoint
@@ -44,10 +46,45 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModernEbookReaderApp() {
     var currentScreen by remember { mutableStateOf("splash") }
     var selectedChapter by remember { mutableStateOf("") }
+    
+    // User state
+    var isLoggedIn by remember { mutableStateOf(false) }
+    var isPremiumUser by remember { mutableStateOf(false) }
+    var userName by remember { mutableStateOf("Guest User") }
+    var userEmail by remember { mutableStateOf("guest@zoroaster.app") }
+    
+    // Navigation drawer state
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    
+    // Function to handle login success
+    val handleLoginSuccess = { email: String ->
+        isLoggedIn = true
+        userName = when (email) {
+            "demo@zoroaster.app" -> "Demo User"
+            "premium@zoroaster.app" -> {
+                isPremiumUser = true
+                "Premium User"
+            }
+            else -> "User"
+        }
+        userEmail = email
+        currentScreen = "library"
+    }
+    
+    // Function to handle logout
+    val handleLogout = {
+        isLoggedIn = false
+        isPremiumUser = false
+        userName = "Guest User"
+        userEmail = "guest@zoroaster.app"
+        currentScreen = "library"
+    }
     
     when (currentScreen) {
         "splash" -> {
@@ -57,23 +94,193 @@ fun ModernEbookReaderApp() {
                 }
             )
         }
-        "library" -> {
-            ModernLibraryScreen(
-                onNavigateToReader = {
-                    currentScreen = "reader"
+        else -> {
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    AppSidebar(
+                        currentRoute = currentScreen,
+                        isLoggedIn = isLoggedIn,
+                        isPremiumUser = isPremiumUser,
+                        userName = userName,
+                        userEmail = userEmail,
+                        onNavigateToRoute = { route ->
+                            currentScreen = route
+                            scope.launch { drawerState.close() }
+                        },
+                        onNavigateToProfile = {
+                            currentScreen = "profile"
+                            scope.launch { drawerState.close() }
+                        },
+                        onNavigateToLogin = {
+                            currentScreen = "signin"
+                            scope.launch { drawerState.close() }
+                        },
+                        onClose = {
+                            scope.launch { drawerState.close() }
+                        }
+                    )
+                }
+            ) {
+                when (currentScreen) {
+                    "library" -> {
+                        ModernLibraryScreenWithSidebar(
+                            onNavigateToReader = {
+                                currentScreen = "reader"
+                            },
+                            onMenuClick = {
+                                scope.launch { drawerState.open() }
+                            }
+                        )
+                    }
+                    "reader" -> {
+                        ModernReaderScreenWithSidebar(
+                            chapterTitle = getChapterTitle(selectedChapter),
+                            onNavigateBack = {
+                                currentScreen = "library"
+                            },
+                            onSettingsClick = {
+                                Log.d("Navigation", "Reader settings clicked")
+                            },
+                            onMenuClick = {
+                                scope.launch { drawerState.open() }
+                            }
+                        )
+                    }
+                    "profile" -> {
+                        UserProfileScreen(
+                            onNavigateBack = { currentScreen = "library" },
+                            onNavigateToThemeSettings = { currentScreen = "theme_settings" },
+                            onLogout = handleLogout,
+                            isLoggedIn = isLoggedIn,
+                            userName = userName,
+                            userEmail = userEmail,
+                            isPremiumUser = isPremiumUser
+                        )
+                    }
+                    "theme_settings" -> {
+                        ThemeSettingsScreen(
+                            onNavigateBack = { currentScreen = "profile" }
+                        )
+                    }
+                    "about" -> {
+                        AboutScreen(
+                            onNavigateBack = { currentScreen = "library" }
+                        )
+                    }
+                    "signin" -> {
+                        EnhancedSignInScreen(
+                            onNavigateBack = { currentScreen = "library" },
+                            onSignInSuccess = {
+                                // Handle guest login or navigate back
+                                if (!isLoggedIn) {
+                                    // Guest mode
+                                    currentScreen = "library"
+                                } else {
+                                    handleLoginSuccess(userEmail)
+                                }
+                            },
+                            onNavigateToSignUp = { currentScreen = "signup" },
+                            onForgotPassword = { /* TODO: Implement forgot password */ }
+                        )
+                    }
+                    "signup" -> {
+                        SignUpScreen(
+                            onNavigateBack = { currentScreen = "signin" },
+                            onSignUpSuccess = {
+                                handleLoginSuccess("newuser@zoroaster.app")
+                            },
+                            onNavigateToSignIn = { currentScreen = "signin" }
+                        )
+                    }
+                    "offline" -> {
+                        OfflineContentScreen(
+                            onNavigateBack = { currentScreen = "library" },
+                            isPremiumUser = isPremiumUser
+                        )
+                    }
+                    "timeline" -> {
+                        TimelineScreen(
+                            onNavigateBack = { currentScreen = "library" },
+                            onNavigateToCharacter = { /* TODO */ }
+                        )
+                    }
+                    "characters" -> {
+                        CharacterDetailScreen(
+                            characterName = "Zoroaster",
+                            onNavigateBack = { currentScreen = "library" }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModernLibraryScreenWithSidebar(
+    onNavigateToReader: () -> Unit,
+    onMenuClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("ZoroasterVers") },
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(Icons.Default.Menu, "Menu")
+                    }
                 }
             )
         }
-        "reader" -> {
-            ModernReaderScreen(
-                chapterTitle = getChapterTitle(selectedChapter),
-                onNavigateBack = {
-                    currentScreen = "library"
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            ModernLibraryScreen(
+                onNavigateToReader = onNavigateToReader
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModernReaderScreenWithSidebar(
+    chapterTitle: String,
+    onNavigateBack: () -> Unit,
+    onSettingsClick: () -> Unit,
+    onMenuClick: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(chapterTitle) },
+                navigationIcon = {
+                    IconButton(onClick = onMenuClick) {
+                        Icon(Icons.Default.Menu, "Menu")
+                    }
                 },
-                onSettingsClick = {
-                    // Handle reader settings
-                    Log.d("Navigation", "Reader settings clicked")
+                actions = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Default.Close, "Close")
+                    }
                 }
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            ModernReaderScreen(
+                chapterTitle = chapterTitle,
+                onNavigateBack = onNavigateBack,
+                onSettingsClick = onSettingsClick
             )
         }
     }
