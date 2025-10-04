@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(
     onNavigateToLogin: () -> Unit,
-    onNavigateToLibrary: () -> Unit
+    _onNavigateToLibrary: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         delay(2000) // Simulate loading time
