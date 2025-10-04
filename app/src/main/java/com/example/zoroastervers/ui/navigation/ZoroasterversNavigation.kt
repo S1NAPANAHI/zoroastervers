@@ -8,13 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.NavType
 import com.example.zoroastervers.LoginScreen
-import com.example.zoroastervers.ui.screens.SplashScreen
-import com.example.zoroastervers.ui.screens.LibraryScreen
-import com.example.zoroastervers.ui.screens.ReaderScreen
-import com.example.zoroastervers.ui.screens.CharacterDetailScreen
-import com.example.zoroastervers.ui.screens.ReaderSettingsScreen
-import com.example.zoroastervers.ui.screens.TimelineScreen
-import com.example.zoroastervers.ui.screens.SubscriptionScreen
+import com.example.zoroastervers.ui.screens.*
 
 @Composable
 fun ZoroasterversNavigation(
@@ -25,9 +19,12 @@ fun ZoroasterversNavigation(
         startDestination = "splash"
     ) {
         composable("splash") {
-            SplashScreen(
-                onNavigateToLogin = { navController.navigate("login") },
-                _onNavigateToLibrary = { navController.navigate("library") }
+            AnimatedSplashScreen(
+                onAnimationComplete = { 
+                    navController.navigate("library") {
+                        popUpTo("splash") { inclusive = true }
+                    }
+                }
             )
         }
         
@@ -38,17 +35,28 @@ fun ZoroasterversNavigation(
                         popUpTo("login") { inclusive = true }
                     }
                 },
-                onNavigateToSignup = { /* TODO: Implement SignupScreen navigation */ }
+                onNavigateToSignup = { 
+                    navController.navigate("signup")
+                }
             )
         }
         
         composable("library") {
-            LibraryScreen(
-                onChapterClick = { chapterId ->
-                    navController.navigate("reader/$chapterId")
+            ModernLibraryScreen(
+                onNavigateToReader = {
+                    navController.navigate("reader")
+                }
+            )
+        }
+        
+        composable("reader") {
+            ModernReaderScreen(
+                chapterTitle = "Default Chapter",
+                onNavigateBack = { 
+                    navController.popBackStack() 
                 },
-                onCharacterClick = { characterSlug ->
-                    navController.navigate("character/$characterSlug")
+                onSettingsClick = { 
+                    navController.navigate("reader_settings") 
                 }
             )
         }
@@ -58,16 +66,16 @@ fun ZoroasterversNavigation(
             arguments = listOf(navArgument("chapterId") { type = NavType.StringType })
         ) { backStackEntry ->
             val chapterId = backStackEntry.arguments?.getString("chapterId") ?: ""
-            ReaderScreen(
-                chapterId = chapterId,
+            ModernReaderScreen(
+                chapterTitle = getChapterTitle(chapterId),
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToSettings = { navController.navigate("reader_settings") }
+                onSettingsClick = { navController.navigate("reader_settings") }
             )
         }
         
         composable("reader_settings") {
-            ReaderSettingsScreen(
-                _onNavigateBack = { navController.popBackStack() }
+            ThemeSettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
         
@@ -84,7 +92,10 @@ fun ZoroasterversNavigation(
 
         composable("timeline") {
             TimelineScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCharacter = { characterSlug ->
+                    navController.navigate("character/$characterSlug")
+                }
             )
         }
 
@@ -95,10 +106,72 @@ fun ZoroasterversNavigation(
         }
 
         composable("settings") {
-            // Assuming ReaderSettingsScreen can also serve as general settings for now
-            ReaderSettingsScreen(
-                _onNavigateBack = { navController.popBackStack() }
+            ThemeSettingsScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+        
+        composable("signup") {
+            SignUpScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onSignUpSuccess = {
+                    navController.navigate("library") {
+                        popUpTo("signup") { inclusive = true }
+                    }
+                },
+                onNavigateToSignIn = { 
+                    navController.navigate("login") {
+                        popUpTo("signup") { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        composable("profile") {
+            UserProfileScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToThemeSettings = { navController.navigate("settings") },
+                onLogout = {
+                    navController.navigate("library") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                isLoggedIn = true,
+                userName = "Demo User",
+                userEmail = "demo@zoroaster.app",
+                isPremiumUser = false
+            )
+        }
+        
+        composable("offline") {
+            OfflineContentScreen(
+                onNavigateBack = { navController.popBackStack() },
+                isPremiumUser = false
+            )
+        }
+        
+        composable("about") {
+            AboutScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }
+}
+
+// Helper function to get chapter titles
+fun getChapterTitle(chapterId: String): String {
+    val chapterTitles = mapOf(
+        "chapter_1" to "Chapter 1: The Divine Calling",
+        "chapter_2" to "Chapter 2: Vision of Ahura Mazda", 
+        "chapter_3" to "Chapter 3: The Sacred Fire",
+        "chapter_4" to "Chapter 4: Teachings of Truth",
+        "chapter_5" to "Chapter 5: The First Disciples",
+        "chapter_6" to "Chapter 6: Opposition Rises",
+        "chapter_7" to "Chapter 7: The King's Court",
+        "chapter_8" to "Chapter 8: Spreading the Word",
+        "chapter_9" to "Chapter 9: Sacred Rituals",
+        "chapter_10" to "Chapter 10: The Final Teaching"
+    )
+    
+    return chapterTitles[chapterId] ?: "Chapter: The Journey Continues"
 }
