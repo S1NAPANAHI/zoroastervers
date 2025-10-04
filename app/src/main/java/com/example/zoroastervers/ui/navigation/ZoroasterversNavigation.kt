@@ -27,7 +27,7 @@ fun ZoroasterversNavigation(
         composable("splash") {
             SplashScreen(
                 onNavigateToLogin = { navController.navigate("login") },
-                onNavigateToLibrary = { navController.navigate("library") }
+                _onNavigateToLibrary = { navController.navigate("library") }
             )
         }
         
@@ -67,7 +67,7 @@ fun ZoroasterversNavigation(
         
         composable("reader_settings") {
             ReaderSettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                _onNavigateBack = { navController.popBackStack() }
             )
         }
         
@@ -97,7 +97,7 @@ fun ZoroasterversNavigation(
         composable("settings") {
             // Assuming ReaderSettingsScreen can also serve as general settings for now
             ReaderSettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                _onNavigateBack = { navController.popBackStack() }
             )
         }
     }
