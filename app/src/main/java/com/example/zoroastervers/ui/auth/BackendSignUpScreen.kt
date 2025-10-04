@@ -373,7 +373,7 @@ fun BackendSignUpScreen(
                     }
                 }
                 
-                // Error message - Fix smart cast issue
+                // Error message - Fixed smart cast issue by capturing state in local variable
                 val currentUiState = uiState
                 if (currentUiState is BackendAuthUiState.Error) {
                     Card(
@@ -421,9 +421,10 @@ fun BackendSignUpScreen(
         }
     }
     
-    // Clear error when user starts typing
+    // Clear error when user starts typing - Fixed smart cast issue by capturing state in local variable
     LaunchedEffect(email, password, confirmPassword) {
-        if (uiState is BackendAuthUiState.Error) {
+        val currentState = uiState
+        if (currentState is BackendAuthUiState.Error) {
             viewModel.clearError()
         }
     }
