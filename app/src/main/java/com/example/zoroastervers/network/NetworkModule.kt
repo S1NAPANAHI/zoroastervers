@@ -1,6 +1,6 @@
 package com.example.zoroastervers.network
 
-import com.zoroastervers.reader.BuildConfig
+import com.example.zoroastervers.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
