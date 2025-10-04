@@ -1,26 +1,18 @@
 package com.example.zoroastervers.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,18 +22,13 @@ fun SignUpScreen(
     onSignUpSuccess: () -> Unit,
     onNavigateToSignIn: () -> Unit
 ) {
-    var fullName by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
-    var isConfirmPasswordVisible by remember { mutableStateOf(false) }
-    var agreedToTerms by remember { mutableStateOf(false) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    
-    val focusManager = LocalFocusManager.current
-    val scrollState = rememberScrollState()
     
     Scaffold(
         topBar = {
@@ -59,228 +46,127 @@ fun SignUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(scrollState),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.Center
         ) {
-            // Header
-            Spacer(modifier = Modifier.height(16.dp))
-            
+            // Welcome Text
             Text(
-                text = "Join ZoroasterVers",
-                style = MaterialTheme.typography.headlineMedium,
+                text = "Join Us",
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.primary
             )
             
             Text(
-                text = "Create your account to access sacred texts and unlock premium features",
+                text = "Create your account to start your spiritual journey",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(top = 8.dp)
             )
             
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             
-            // Form Fields
+            // Name Field
             OutlinedTextField(
-                value = fullName,
-                onValueChange = { fullName = it },
+                value = name,
+                onValueChange = { name = it },
                 label = { Text("Full Name") },
                 leadingIcon = {
-                    Icon(Icons.Default.Person, contentDescription = "Name")
+                    Icon(Icons.Default.Person, "Name")
                 },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
                 shape = RoundedCornerShape(12.dp)
             )
             
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Email Field
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email Address") },
+                label = { Text("Email") },
                 leadingIcon = {
-                    Icon(Icons.Default.Email, contentDescription = "Email")
+                    Icon(Icons.Default.Email, "Email")
                 },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
                 shape = RoundedCornerShape(12.dp)
             )
             
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Password Field
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, contentDescription = "Password")
+                    Icon(Icons.Default.Lock, "Password")
                 },
                 trailingIcon = {
-                    IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(
-                            if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                            if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            "Toggle password visibility"
                         )
                     }
                 },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
-                ),
                 shape = RoundedCornerShape(12.dp)
             )
             
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Confirm Password Field
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text("Confirm Password") },
                 leadingIcon = {
-                    Icon(Icons.Default.Lock, contentDescription = "Confirm Password")
+                    Icon(Icons.Default.Lock, "Confirm Password")
                 },
                 trailingIcon = {
-                    IconButton(onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }) {
+                    IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                         Icon(
-                            if (isConfirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                            contentDescription = if (isConfirmPasswordVisible) "Hide password" else "Show password"
+                            if (confirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            "Toggle password visibility"
                         )
                     }
                 },
-                visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { focusManager.clearFocus() }
-                ),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                isError = confirmPassword.isNotEmpty() && password != confirmPassword
             )
             
-            // Password Requirements
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Password Requirements:",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    PasswordRequirement(
-                        text = "At least 8 characters",
-                        isMet = password.length >= 8
-                    )
-                    PasswordRequirement(
-                        text = "Contains uppercase letter",
-                        isMet = password.any { it.isUpperCase() }
-                    )
-                    PasswordRequirement(
-                        text = "Contains lowercase letter",
-                        isMet = password.any { it.isLowerCase() }
-                    )
-                    PasswordRequirement(
-                        text = "Contains a number",
-                        isMet = password.any { it.isDigit() }
-                    )
-                    PasswordRequirement(
-                        text = "Passwords match",
-                        isMet = password.isNotEmpty() && password == confirmPassword
-                    )
-                }
-            }
-            
-            // Terms and Conditions
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = agreedToTerms,
-                    onCheckedChange = { agreedToTerms = it }
-                )
-                
-                Spacer(modifier = Modifier.width(8.dp))
-                
+            if (confirmPassword.isNotEmpty() && password != confirmPassword) {
                 Text(
-                    text = "I agree to the Terms of Service and Privacy Policy",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.clickable { agreedToTerms = !agreedToTerms }
+                    text = "Passwords don't match",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(start = 16.dp, top = 4.dp)
                 )
             }
             
-            // Error Message
-            if (errorMessage != null) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = errorMessage!!,
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             
             // Sign Up Button
             Button(
                 onClick = {
-                    if (validateForm(fullName, email, password, confirmPassword, agreedToTerms)) {
-                        isLoading = true
-                        errorMessage = null
-                        // TODO: Implement actual sign up logic
-                        // Simulate API call
-                        kotlinx.coroutines.MainScope().launch {
-                            kotlinx.coroutines.delay(2000)
-                            isLoading = false
-                            onSignUpSuccess()
-                        }
-                    } else {
-                        errorMessage = getFormValidationError(fullName, email, password, confirmPassword, agreedToTerms)
-                    }
+                    isLoading = true
+                    // Simulate signup process
+                    onSignUpSuccess()
                 },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                enabled = !isLoading,
-                shape = RoundedCornerShape(12.dp)
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                enabled = name.isNotBlank() && email.isNotBlank() && password.isNotBlank() && 
+                         password == confirmPassword && !isLoading
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
@@ -289,103 +175,24 @@ fun SignUpScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text(
-                        text = "Create Account",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text("Create Account")
                 }
             }
             
-            // Divider
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f))
-                Text(
-                    text = "OR",
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                HorizontalDivider(modifier = Modifier.weight(1f))
-            }
+            Spacer(modifier = Modifier.height(32.dp))
             
             // Sign In Link
-            TextButton(
-                onClick = onNavigateToSignIn,
-                modifier = Modifier.fillMaxWidth()
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Already have an account? Sign In")
+                Text(
+                    text = "Already have an account? ",
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+                TextButton(onClick = onNavigateToSignIn) {
+                    Text("Sign In")
+                }
             }
-            
-            Spacer(modifier = Modifier.height(32.dp))
         }
-    }
-}
-
-@Composable
-fun PasswordRequirement(
-    text: String,
-    isMet: Boolean
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 2.dp)
-    ) {
-        Icon(
-            if (isMet) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-            tint = if (isMet) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
-        
-        Spacer(modifier = Modifier.width(8.dp))
-        
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodySmall,
-            color = if (isMet) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
-        )
-    }
-}
-
-private fun validateForm(
-    fullName: String,
-    email: String,
-    password: String,
-    confirmPassword: String,
-    agreedToTerms: Boolean
-): Boolean {
-    return fullName.isNotBlank() &&
-            email.isNotBlank() &&
-            android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() &&
-            password.length >= 8 &&
-            password.any { it.isUpperCase() } &&
-            password.any { it.isLowerCase() } &&
-            password.any { it.isDigit() } &&
-            password == confirmPassword &&
-            agreedToTerms
-}
-
-private fun getFormValidationError(
-    fullName: String,
-    email: String,
-    password: String,
-    confirmPassword: String,
-    agreedToTerms: Boolean
-): String {
-    return when {
-        fullName.isBlank() -> "Please enter your full name"
-        email.isBlank() -> "Please enter your email address"
-        !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Please enter a valid email address"
-        password.length < 8 -> "Password must be at least 8 characters long"
-        !password.any { it.isUpperCase() } -> "Password must contain an uppercase letter"
-        !password.any { it.isLowerCase() } -> "Password must contain a lowercase letter"
-        !password.any { it.isDigit() } -> "Password must contain a number"
-        password != confirmPassword -> "Passwords do not match"
-        !agreedToTerms -> "Please agree to the Terms of Service and Privacy Policy"
-        else -> "Please check all fields and try again"
     }
 }
