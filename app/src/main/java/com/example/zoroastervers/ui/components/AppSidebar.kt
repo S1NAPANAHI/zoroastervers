@@ -70,7 +70,7 @@ fun AppSidebar(
             }
             
             item {
-                HorizontalDivider(
+                Divider(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
@@ -346,7 +346,7 @@ fun AppInfoFooter() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HorizontalDivider(
+        Divider(
             modifier = Modifier.padding(bottom = 8.dp)
         )
         
