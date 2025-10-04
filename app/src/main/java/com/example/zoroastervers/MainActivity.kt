@@ -207,7 +207,7 @@ fun ModernEbookReaderApp() {
                     }
                     "characters" -> {
                         CharacterDetailScreen(
-                            characterName = "Zoroaster",
+                            characterSlug = "zoroaster",
                             onNavigateBack = { currentScreen = "library" }
                         )
                     }
