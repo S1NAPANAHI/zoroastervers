@@ -1,19 +1,22 @@
 package com.example.zoroastervers
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.Configuration
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.example.zoroastervers.worker.SyncWorker
-import dagger.hilt.android.HiltAndroidApp
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import android.util.Log
 
-@HiltAndroidApp
-class ZoroasterversApplication : Application(), Configuration.Provider {
+// Temporarily remove @HiltAndroidApp to avoid crashes
+//@HiltAndroidApp
+class ZoroasterversApplication : Application() {
 
+    override fun onCreate() {
+        super.onCreate()
+        Log.d("ZoroasterversApplication", "Application started successfully")
+        
+        // Comment out Hilt-dependent code temporarily
+        // setupPeriodicSync()
+    }
+
+    /*
+    // Re-enable this once Hilt is working
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
@@ -22,11 +25,6 @@ class ZoroasterversApplication : Application(), Configuration.Provider {
             .setWorkerFactory(workerFactory)
             .setMinimumLoggingLevel(android.util.Log.DEBUG)
             .build()
-
-    override fun onCreate() {
-        super.onCreate()
-        setupPeriodicSync()
-    }
 
     private fun setupPeriodicSync() {
         val syncWorkRequest = PeriodicWorkRequestBuilder<SyncWorker>(15, TimeUnit.MINUTES)
@@ -38,4 +36,5 @@ class ZoroasterversApplication : Application(), Configuration.Provider {
             syncWorkRequest
         )
     }
+    */
 }
