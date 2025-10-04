@@ -112,6 +112,7 @@ fun ModernLibraryScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class) // This annotation fixes the experimental API warnings
 @Composable
 fun LibraryAppBar(onSearchClicked: () -> Unit) {
     var isSearchActive by remember { mutableStateOf(false) }
