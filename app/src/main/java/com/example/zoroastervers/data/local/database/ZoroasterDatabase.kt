@@ -5,10 +5,10 @@ import androidx.room.RoomDatabase
 
 /**
  * Room database for ZoroasterVers app
- * Currently empty, but ready for future entities
+ * Contains placeholder entity until actual entities are defined
  */
 @Database(
-    entities = [],
+    entities = [PlaceholderEntity::class],
     version = 1,
     exportSchema = false
 )
