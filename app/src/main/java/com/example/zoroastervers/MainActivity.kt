@@ -249,6 +249,17 @@ fun ModernLibraryScreenWithSidebar(
     onMenuClick: () -> Unit,
     onNavigateToDebug: () -> Unit = {}
 ) {
+    // Check for debug mode safely
+    val isDebugMode = remember {
+        try {
+            val debugField = BuildConfig::class.java.getDeclaredField("DEBUG")
+            debugField.getBoolean(null)
+        } catch (e: Exception) {
+            Log.d("MainActivity", "BuildConfig.DEBUG not available: ${e.message}")
+            false
+        }
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -260,18 +271,10 @@ fun ModernLibraryScreenWithSidebar(
                 },
                 actions = {
                     // Debug button (only in debug builds)
-                    try {
-                        // Safely check if BuildConfig.DEBUG exists
-                        val debugField = BuildConfig::class.java.getDeclaredField("DEBUG")
-                        val isDebug = debugField.getBoolean(null)
-                        if (isDebug) {
-                            IconButton(onClick = onNavigateToDebug) {
-                                Icon(Icons.Default.Settings, "Debug")
-                            }
+                    if (isDebugMode) {
+                        IconButton(onClick = onNavigateToDebug) {
+                            Icon(Icons.Default.Settings, "Debug")
                         }
-                    } catch (e: Exception) {
-                        // BuildConfig.DEBUG not available, skip debug button
-                        Log.d("MainActivity", "BuildConfig.DEBUG not available: ${e.message}")
                     }
                 }
             )
