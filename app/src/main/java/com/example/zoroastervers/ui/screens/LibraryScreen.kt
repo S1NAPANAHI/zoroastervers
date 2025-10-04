@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.zoroastervers.reader.R
+import com.example.zoroastervers.R
 import com.example.zoroastervers.data.Chapter
 import com.example.zoroastervers.data.Character
 import com.example.zoroastervers.data.ReadingProgress
@@ -346,16 +346,20 @@ fun CharacterCard(
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Character Avatar
-            AsyncImage(
-                model = character.portraitUrl,
-                contentDescription = character.name,
+            // Character Avatar - Using a placeholder since we don't have actual drawable resources
+            Box(
                 modifier = Modifier
                     .size(60.dp)
                     .clip(CircleShape),
-                contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.ic_person_placeholder)
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = character.name,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = character.name,
