@@ -121,9 +121,10 @@ fun ThemeSettingsScreen(
                 ThemeSettingsSectionTitle("Typography")
             }
             
-            // Font Size Setting
+            // Font Size Setting - Use shared component from CommonComponents
             item {
                 FontSizeSlider(
+                    label = "Reading Font Size",
                     fontSize = fontSize,
                     onFontSizeChanged = { fontSize = it }
                 )
@@ -213,7 +214,7 @@ fun AppThemeSelector(
                 }
                 
                 if (theme != AppTheme.entries.last()) {
-                    HorizontalDivider(
+                    Divider(
                         modifier = Modifier.padding(start = 48.dp),
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
@@ -310,64 +311,8 @@ fun ReaderThemeSelector(
     }
 }
 
-@Composable
-fun FontSizeSlider(
-    fontSize: Float,
-    onFontSizeChanged: (Float) -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Font Size",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Medium
-                )
-                
-                Text(
-                    text = "${fontSize.toInt()}sp",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Slider(
-                value = fontSize,
-                onValueChange = onFontSizeChanged,
-                valueRange = 12f..24f,
-                steps = 11
-            )
-            
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Smaller",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                
-                Text(
-                    text = "Larger",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-            }
-        }
-    }
-}
+// REMOVED: The conflicting FontSizeSlider function has been deleted
+// It now uses the shared one from CommonComponents.kt
 
 @Composable
 fun LineSpacingSlider(
