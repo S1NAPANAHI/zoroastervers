@@ -1,4 +1,4 @@
-// CORRECTED: Fixed @Composable invocation error in TimelineEvent data class
+// CORRECTED: Fixed @Composable invocation error and API compatibility issues
 
 package com.example.zoroastervers.ui.screens
 
@@ -21,7 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
@@ -51,6 +51,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.zoroastervers.R
 import com.example.zoroastervers.ui.theme.ZoroasterVersTheme
 import kotlinx.coroutines.launch
@@ -143,14 +144,13 @@ fun LibraryAppBar(onSearchClicked: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarDialog(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    BasicAlertDialog(onDismissRequest = onDismiss) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -169,7 +169,7 @@ fun SearchBarDialog(
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                     trailingIcon = {
                         IconButton(onClick = onDismiss) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Close Search")
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Close Search")
                         }
                     },
                     singleLine = true
@@ -255,7 +255,7 @@ fun ContinueReadingCard(book: Book, progress: Float, onClick: () -> Unit) {
                 }
                 Column {
                     LinearProgressIndicator(
-                        progress = { progress },
+                        progress = progress,
                         modifier = Modifier.fillMaxWidth(),
                         strokeCap = StrokeCap.Round
                     )
