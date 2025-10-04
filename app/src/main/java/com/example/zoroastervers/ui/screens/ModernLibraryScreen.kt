@@ -21,17 +21,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.MenuBook
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,14 +35,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.example.zoroastervers.R
 import com.example.zoroastervers.ui.theme.ZoroasterVersTheme
 import kotlinx.coroutines.launch
 
@@ -236,14 +224,29 @@ fun ContinueReadingCard(book: Book, progress: Float, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row {
-            Image(
-                painter = painterResource(id = book.coverRes),
-                contentDescription = book.title,
+            // Book cover placeholder using icon
+            Box(
                 modifier = Modifier
                     .width(100.dp)
-                    .fillMaxHeight(),
-                contentScale = ContentScale.Crop
-            )
+                    .fillMaxHeight()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.MenuBook,
+                    contentDescription = "Book Cover",
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.White
+                )
+            }
+            
             Column(
                 modifier = Modifier
                     .padding(12.dp)
@@ -256,7 +259,7 @@ fun ContinueReadingCard(book: Book, progress: Float, onClick: () -> Unit) {
                 }
                 Column {
                     LinearProgressIndicator(
-                        progress = progress,
+                        progress = { progress },
                         modifier = Modifier.fillMaxWidth(),
                         strokeCap = StrokeCap.Round
                     )
@@ -293,12 +296,26 @@ fun BookCoverItem(book: Book, onClick: () -> Unit) {
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Image(
-            painter = painterResource(id = book.coverRes),
-            contentDescription = book.title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.primaryContainer,
+                            MaterialTheme.colorScheme.primary
+                        )
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.MenuBook,
+                contentDescription = book.title,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
     }
 }
 
@@ -316,15 +333,30 @@ fun BookListItem(book: Book, onClick: () -> Unit) {
             modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = book.coverRes),
-                contentDescription = book.title,
+            // Book cover placeholder using icon
+            Box(
                 modifier = Modifier
                     .width(60.dp)
                     .height(90.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.MenuBook,
+                    contentDescription = "Book Cover",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+            
             Spacer(Modifier.width(16.dp))
             Column(
                 modifier = Modifier.weight(1f)
@@ -378,12 +410,16 @@ fun CharacterCard(character: Character, onClick: () -> Unit) {
                     )
                 )
         ) {
-            Image(
-                painter = painterResource(id = character.imageRes),
+            // Character image placeholder using icon
+            Icon(
+                Icons.Default.Person,
                 contentDescription = character.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .size(64.dp)
+                    .align(Alignment.Center),
+                tint = MaterialTheme.colorScheme.primary
             )
+            
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -480,24 +516,24 @@ fun TimelineItem(event: TimelineEvent, lineBrush: Brush) {
 
 // --- Sample Data ---
 
-data class Book(val title: String, val author: String, val coverRes: Int)
-data class Character(val name: String, val imageRes: Int)
+data class Book(val title: String, val author: String)
+data class Character(val name: String)
 data class TimelineEvent(val year: String, val title: String, val description: String, val icon: ImageVector)
 
 val sampleBooks = listOf(
-    Book("Gathas: The Hymns", "Zoroaster", R.drawable.cover_placeholder_1),
-    Book("The Avesta: Part I", "Various", R.drawable.cover_placeholder_2),
-    Book("The Denkard: Book 3", "Adurfarnbag", R.drawable.cover_placeholder_3),
-    Book("Persian Mythology", "John Hinnells", R.drawable.cover_placeholder_1),
-    Book("The Bundahishn", "Farnbag", R.drawable.cover_placeholder_2)
+    Book("Gathas: The Hymns", "Zoroaster"),
+    Book("The Avesta: Part I", "Various"),
+    Book("The Denkard: Book 3", "Adurfarnbag"),
+    Book("Persian Mythology", "John Hinnells"),
+    Book("The Bundahishn", "Farnbag")
 )
 
 val sampleCharacters = listOf(
-    Character("Zoroaster", R.drawable.char_placeholder_1),
-    Character("Ahura Mazda", R.drawable.char_placeholder_2),
-    Character("Angra Mainyu", R.drawable.char_placeholder_1),
-    Character("Mithra", R.drawable.char_placeholder_2),
-    Character("Anahita", R.drawable.char_placeholder_1)
+    Character("Zoroaster"),
+    Character("Ahura Mazda"),
+    Character("Angra Mainyu"),
+    Character("Mithra"),
+    Character("Anahita")
 )
 
 
