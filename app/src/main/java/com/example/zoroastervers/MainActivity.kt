@@ -235,10 +235,15 @@ fun ModernLibraryScreenWithSidebar(
             )
         }
     ) { paddingValues ->
-        ModernLibraryScreen(
-            modifier = Modifier.padding(paddingValues),
-            onNavigateToReader = onNavigateToReader
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            ModernLibraryScreen(
+                onNavigateToReader = onNavigateToReader
+            )
+        }
     }
 }
 
@@ -267,12 +272,17 @@ fun ModernReaderScreenWithSidebar(
             )
         }
     ) { paddingValues ->
-        ModernReaderScreen(
-            modifier = Modifier.padding(paddingValues),
-            chapterTitle = chapterTitle,
-            onNavigateBack = onNavigateBack,
-            onSettingsClick = onSettingsClick
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            ModernReaderScreen(
+                chapterTitle = chapterTitle,
+                onNavigateBack = onNavigateBack,
+                onSettingsClick = onSettingsClick
+            )
+        }
     }
 }
 
