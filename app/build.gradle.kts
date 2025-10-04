@@ -62,6 +62,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     
+    // Material Design Components (Required for XML themes)
+    implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    
     // Compose BOM
     implementation(platform(libs.compose.bom))
     implementation(libs.compose.ui)
