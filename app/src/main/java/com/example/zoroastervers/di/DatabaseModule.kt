@@ -2,7 +2,8 @@ package com.example.zoroastervers.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.zoroastervers.data.local.database.ZoroasterDatabase
+import com.example.zoroastervers.data.ZoroasterversDatabase
+import com.example.zoroastervers.data.UserDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,22 +17,31 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideZoroasterDatabase(
+    fun provideZoroasterversDatabase(
         @ApplicationContext context: Context
-    ): ZoroasterDatabase {
+    ): ZoroasterversDatabase {
         return Room.databaseBuilder(
             context,
-            ZoroasterDatabase::class.java,
-            "zoroaster_database"
+            ZoroasterversDatabase::class.java,
+            "zoroastervers_database"
         )
         .fallbackToDestructiveMigration() // For development - remove in production
         .build()
     }
 
-    // Add DAO providers here when database entities are created
-    // Example:
+    @Provides
+    fun provideUserDao(database: ZoroasterversDatabase): UserDao {
+        return database.userDao()
+    }
+
+    // Add other DAO providers as entities are uncommented in the database
     // @Provides
-    // fun provideUserDao(database: ZoroasterDatabase): UserDao {
-    //     return database.userDao()
+    // fun provideChapterDao(database: ZoroasterversDatabase): ChapterDao {
+    //     return database.chapterDao()
+    // }
+    
+    // @Provides
+    // fun provideReadingProgressDao(database: ZoroasterversDatabase): ReadingProgressDao {
+    //     return database.readingProgressDao()
     // }
 }
