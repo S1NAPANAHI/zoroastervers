@@ -86,7 +86,7 @@ fun ThemeSettingsScreen(
         ) {
             // App Theme Section
             item {
-                SectionTitle("App Theme")
+                ThemeSettingsSectionTitle("App Theme")
             }
             
             item {
@@ -98,7 +98,7 @@ fun ThemeSettingsScreen(
             
             // Reader Theme Section
             item {
-                SectionTitle("Reading Theme")
+                ThemeSettingsSectionTitle("Reading Theme")
             }
             
             item {
@@ -118,7 +118,7 @@ fun ThemeSettingsScreen(
             
             // Typography Section
             item {
-                SectionTitle("Typography")
+                ThemeSettingsSectionTitle("Typography")
             }
             
             // Font Size Setting
@@ -139,7 +139,7 @@ fun ThemeSettingsScreen(
             
             // Preview Section
             item {
-                SectionTitle("Preview")
+                ThemeSettingsSectionTitle("Preview")
             }
             
             item {
@@ -159,6 +159,16 @@ fun ThemeSettingsScreen(
 }
 
 @Composable
+fun ThemeSettingsSectionTitle(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(horizontal = 0.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
 fun AppThemeSelector(
     selectedTheme: AppTheme,
     onThemeSelected: (AppTheme) -> Unit
@@ -170,7 +180,7 @@ fun AppThemeSelector(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            AppTheme.values().forEach { theme ->
+            AppTheme.entries.forEach { theme ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -202,8 +212,8 @@ fun AppThemeSelector(
                     )
                 }
                 
-                if (theme != AppTheme.values().last()) {
-                    Divider(
+                if (theme != AppTheme.entries.last()) {
+                    HorizontalDivider(
                         modifier = Modifier.padding(start = 48.dp),
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     )
@@ -221,7 +231,7 @@ fun ReaderThemeSelector(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ReaderTheme.values().forEach { theme ->
+        ReaderTheme.entries.forEach { theme ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
