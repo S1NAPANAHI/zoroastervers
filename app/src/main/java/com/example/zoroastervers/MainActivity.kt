@@ -17,6 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.zoroastervers.ui.auth.BackendLoginScreen
 import com.example.zoroastervers.ui.auth.BackendSignUpScreen
+import com.example.zoroastervers.ui.auth.BackendAuthViewModel
+import com.example.zoroastervers.ui.auth.BackendAuthUiState
 import com.example.zoroastervers.ui.components.AppSidebar
 import com.example.zoroastervers.ui.debug.ApiDebugScreen
 import com.example.zoroastervers.ui.screens.*
