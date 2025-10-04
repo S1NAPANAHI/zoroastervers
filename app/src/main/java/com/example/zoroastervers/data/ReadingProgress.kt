@@ -2,6 +2,7 @@ package com.example.zoroastervers.data
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
@@ -15,7 +16,8 @@ import java.util.UUID
             childColumns = ["chapterId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["chapterId"])]
 )
 data class ReadingProgress(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
