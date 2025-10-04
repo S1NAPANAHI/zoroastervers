@@ -224,8 +224,9 @@ fun BackendLoginScreen(
                     }
                 }
                 
-                // Error message
-                if (uiState is BackendAuthUiState.Error) {
+                // Error message - Fix smart cast issue
+                val currentUiState = uiState
+                if (currentUiState is BackendAuthUiState.Error) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -236,7 +237,7 @@ fun BackendLoginScreen(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = uiState.message,
+                            text = currentUiState.message,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
