@@ -37,7 +37,7 @@ class ReaderViewModel : androidx.lifecycle.ViewModel() {
 
     val readerSettings = MutableStateFlow(ReaderSettings.default())
 
-    fun loadChapter(chapterId: String) {
+    fun loadChapter(_chapterId: String) {
         // Simulate loading
         _uiState.value = ReaderUiState.Success(
             chapter = Chapter("1", "issue1", "Sample Chapter Title", "slug1", 1, "This is the content of the sample chapter. It's a long piece of text to demonstrate scrolling and reading experience. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", "", "", null, true, null, 5000, 25),
@@ -46,11 +46,11 @@ class ReaderViewModel : androidx.lifecycle.ViewModel() {
         )
     }
 
-    fun updateProgress(progressPercentage: Int, currentScrollPosition: Float) {
+    fun updateProgress(_progressPercentage: Int, _currentScrollPosition: Float) {
         // TODO: Implement actual progress update logic
     }
 
-    fun addBookmark(chapterId: String) {
+    fun addBookmark(_chapterId: String) {
         // TODO: Implement actual bookmark logic
     }
 }
