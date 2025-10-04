@@ -32,8 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.zoroastervers.BackendAuthViewModel
-import com.example.zoroastervers.BackendAuthUiState
 import com.example.zoroastervers.R
 
 /**
@@ -425,7 +423,7 @@ fun BackendSignUpScreen(
     LaunchedEffect(email, password, confirmPassword) {
         val currentState = uiState
         if (currentState is BackendAuthUiState.Error) {
-            viewModel.clearError()
+            viewModel.clearUiState()
         }
     }
 }
