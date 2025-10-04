@@ -11,7 +11,7 @@ plugins {
 android {
     compileSdk = 34
     defaultConfig {
-        applicationId = "com.zoroastervers.reader"
+        applicationId = "com.example.zoroastervers"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -37,7 +37,7 @@ android {
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
         }
     }
-    namespace = "com.zoroastervers.reader"
+    namespace = "com.example.zoroastervers"
     buildTypes {
         release {
             isMinifyEnabled = false
