@@ -1,11 +1,46 @@
 package com.example.zoroastervers.network.model
 
+import com.google.gson.annotations.SerializedName
+
+/**
+ * Unified authentication models for both existing API and backend integration
+ */
+
+// Backend Authentication Models
 data class AuthResponse(
+    val user: User,
+    @SerializedName("access_token")
     val accessToken: String,
+    @SerializedName("refresh_token")
     val refreshToken: String,
-    val user: ApiUser
+    @SerializedName("expires_at")
+    val expiresAt: Long
 )
 
+data class User(
+    val id: String,
+    val email: String,
+    val role: String = "user"
+)
+
+data class UserResponse(
+    val user: User
+)
+
+data class RefreshResponse(
+    @SerializedName("access_token")
+    val accessToken: String,
+    @SerializedName("refresh_token")
+    val refreshToken: String,
+    @SerializedName("expires_at")
+    val expiresAt: Long
+)
+
+data class SignOutResponse(
+    val message: String
+)
+
+// Legacy API User Model (keeping for backward compatibility)
 data class ApiUser(
     val id: String,
     val email: String,
@@ -15,6 +50,29 @@ data class ApiUser(
     val subscriptionEndDate: String?
 )
 
+// Request models
+data class SignUpRequest(
+    val email: String,
+    val password: String,
+    val userData: Map<String, Any>? = null
+)
+
+data class SignInRequest(
+    val email: String,
+    val password: String
+)
+
+data class RefreshTokenRequest(
+    @SerializedName("refresh_token")
+    val refreshToken: String
+)
+
+data class GoogleSignInRequest(
+    @SerializedName("idToken")
+    val idToken: String
+)
+
+// Content models
 data class ChapterResponse(
     val id: String,
     val issueId: String,
@@ -41,22 +99,6 @@ data class SubscriptionStatusResponse(
     val hasAccess: Boolean
 )
 
-// Request models
-data class SignInRequest(
-    val email: String,
-    val password: String
-)
-
-data class SignUpRequest(
-    val email: String,
-    val password: String,
-    val displayName: String? = null
-)
-
-data class RefreshTokenRequest(
-    val refreshToken: String
-)
-
 data class UpdateProgressRequest(
     val chapterId: String,
     val progressPercentage: Int,
@@ -75,4 +117,12 @@ data class ReadingProgressResponse(
     val currentScrollPosition: Float,
     val bookmarks: String,
     val notes: String
+)
+
+/**
+ * Error response model
+ */
+data class ErrorResponse(
+    val error: String,
+    val message: String? = null
 )
