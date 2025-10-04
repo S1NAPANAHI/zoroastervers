@@ -13,13 +13,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.zoroastervers.ui.auth.BackendLoginScreen
+import com.example.zoroastervers.ui.auth.BackendSignUpScreen
 import com.example.zoroastervers.ui.components.AppSidebar
 import com.example.zoroastervers.ui.screens.*
 import com.example.zoroastervers.ui.theme.ZoroasterVersTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-// Remove @AndroidEntryPoint temporarily to avoid Hilt crashes
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,38 +56,32 @@ fun ModernEbookReaderApp() {
     var currentScreen by remember { mutableStateOf("splash") }
     var selectedChapter by remember { mutableStateOf("") }
     
-    // User state
-    var isLoggedIn by remember { mutableStateOf(false) }
-    var isPremiumUser by remember { mutableStateOf(false) }
-    var userName by remember { mutableStateOf("Guest User") }
-    var userEmail by remember { mutableStateOf("guest@zoroaster.app") }
+    // Get the backend auth view model
+    val backendAuthViewModel: BackendAuthViewModel = hiltViewModel()
+    val authUiState by backendAuthViewModel.uiState.collectAsStateWithLifecycle()
+    val isAuthenticated by backendAuthViewModel.isAuthenticated.collectAsStateWithLifecycle()
+    val currentUser by backendAuthViewModel.currentUser.collectAsStateWithLifecycle()
     
     // Navigation drawer state
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     
     // Function to handle login success
-    val handleLoginSuccess = { email: String ->
-        isLoggedIn = true
-        userName = when (email) {
-            "demo@zoroaster.app" -> "Demo User"
-            "premium@zoroaster.app" -> {
-                isPremiumUser = true
-                "Premium User"
-            }
-            else -> "User"
-        }
-        userEmail = email
+    val handleLoginSuccess = {
         currentScreen = "library"
     }
     
     // Function to handle logout
     val handleLogout = {
-        isLoggedIn = false
-        isPremiumUser = false
-        userName = "Guest User"
-        userEmail = "guest@zoroaster.app"
+        backendAuthViewModel.signOut()
         currentScreen = "library"
+    }
+    
+    // Auto-navigate based on authentication state
+    LaunchedEffect(isAuthenticated) {
+        if (isAuthenticated && currentScreen in listOf("signin", "signup")) {
+            currentScreen = "library"
+        }
     }
     
     when (currentScreen) {
@@ -94,16 +92,28 @@ fun ModernEbookReaderApp() {
                 }
             )
         }
+        "signin" -> {
+            BackendLoginScreen(
+                onLoginSuccess = handleLoginSuccess,
+                onNavigateToSignUp = { currentScreen = "signup" }
+            )
+        }
+        "signup" -> {
+            BackendSignUpScreen(
+                onSignUpSuccess = handleLoginSuccess,
+                onNavigateBack = { currentScreen = "signin" }
+            )
+        }
         else -> {
             ModalNavigationDrawer(
                 drawerState = drawerState,
                 drawerContent = {
                     AppSidebar(
                         currentRoute = currentScreen,
-                        isLoggedIn = isLoggedIn,
-                        isPremiumUser = isPremiumUser,
-                        userName = userName,
-                        userEmail = userEmail,
+                        isLoggedIn = isAuthenticated,
+                        isPremiumUser = backendAuthViewModel.isPremiumUser(),
+                        userName = currentUser?.email?.substringBefore("@") ?: "Guest User",
+                        userEmail = currentUser?.email ?: "guest@zoroaster.app",
                         onNavigateToRoute = { route ->
                             currentScreen = route
                             scope.launch { drawerState.close() }
@@ -152,10 +162,10 @@ fun ModernEbookReaderApp() {
                             onNavigateBack = { currentScreen = "library" },
                             onNavigateToThemeSettings = { currentScreen = "theme_settings" },
                             onLogout = handleLogout,
-                            isLoggedIn = isLoggedIn,
-                            userName = userName,
-                            userEmail = userEmail,
-                            isPremiumUser = isPremiumUser
+                            isLoggedIn = isAuthenticated,
+                            userName = currentUser?.email?.substringBefore("@") ?: "Guest User",
+                            userEmail = currentUser?.email ?: "guest@zoroaster.app",
+                            isPremiumUser = backendAuthViewModel.isPremiumUser()
                         )
                     }
                     "theme_settings" -> {
@@ -168,35 +178,10 @@ fun ModernEbookReaderApp() {
                             onNavigateBack = { currentScreen = "library" }
                         )
                     }
-                    "signin" -> {
-                        EnhancedSignInScreen(
-                            onNavigateBack = { currentScreen = "library" },
-                            onSignInSuccess = {
-                                // Handle guest login or navigate back
-                                if (!isLoggedIn) {
-                                    // Guest mode
-                                    currentScreen = "library"
-                                } else {
-                                    handleLoginSuccess(userEmail)
-                                }
-                            },
-                            onNavigateToSignUp = { currentScreen = "signup" },
-                            onForgotPassword = { /* TODO: Implement forgot password */ }
-                        )
-                    }
-                    "signup" -> {
-                        SignUpScreen(
-                            onNavigateBack = { currentScreen = "signin" },
-                            onSignUpSuccess = {
-                                handleLoginSuccess("newuser@zoroaster.app")
-                            },
-                            onNavigateToSignIn = { currentScreen = "signin" }
-                        )
-                    }
                     "offline" -> {
                         OfflineContentScreen(
                             onNavigateBack = { currentScreen = "library" },
-                            isPremiumUser = isPremiumUser
+                            isPremiumUser = backendAuthViewModel.isPremiumUser()
                         )
                     }
                     "timeline" -> {
@@ -211,6 +196,35 @@ fun ModernEbookReaderApp() {
                             onNavigateBack = { currentScreen = "library" }
                         )
                     }
+                }
+            }
+        }
+    }
+    
+    // Show loading overlay when authenticating
+    if (authUiState is BackendAuthUiState.Loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                modifier = Modifier.size(100.dp),
+                shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface,
+                shadowElevation = 8.dp
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Authenticating...",
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
             }
         }
