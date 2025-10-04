@@ -21,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun ReaderSettingsScreen(
     viewModel: ReaderSettingsViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    _onNavigateBack: () -> Unit
 ) {
     val settings by viewModel.settings.collectAsState()
     
