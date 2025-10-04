@@ -1,5 +1,6 @@
 package com.example.zoroastervers.di
 
+import android.util.Log
 import com.example.zoroastervers.BuildConfig
 import com.example.zoroastervers.network.BackendAuthApiService
 import dagger.Module
@@ -25,8 +26,16 @@ object NetworkModule {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
 
+        // Safely check debug mode
+        val isDebugMode = try {
+            BuildConfig.DEBUG
+        } catch (e: Exception) {
+            Log.w("NetworkModule", "Could not access BuildConfig.DEBUG: ${e.message}")
+            false
+        }
+
         // Add logging interceptor for debug builds
-        if (BuildConfig.DEBUG) {
+        if (isDebugMode) {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
@@ -39,8 +48,16 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        // Safely get API base URL with fallback
+        val apiBaseUrl = try {
+            BuildConfig.API_BASE_URL
+        } catch (e: Exception) {
+            Log.w("NetworkModule", "Could not access BuildConfig.API_BASE_URL: ${e.message}")
+            "https://webcite-for-new-authors.onrender.com/api/" // Fallback URL
+        }
+
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.API_BASE_URL)
+            .baseUrl(apiBaseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
